@@ -152,6 +152,33 @@ public class @PlayerControls : IInputActionCollection, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Interaction"",
+            ""id"": ""7d379ef8-0dfa-4abe-85f0-da9c1d683fca"",
+            ""actions"": [
+                {
+                    ""name"": ""Click"",
+                    ""type"": ""Button"",
+                    ""id"": ""db073ae0-8f94-4f36-add6-a9e133195aa8"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""25387d28-f2aa-4730-b8d8-723171d0975d"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Click"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -163,6 +190,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         // Look
         m_Look = asset.FindActionMap("Look", throwIfNotFound: true);
         m_Look_Mouse = m_Look.FindAction("Mouse", throwIfNotFound: true);
+        // Interaction
+        m_Interaction = asset.FindActionMap("Interaction", throwIfNotFound: true);
+        m_Interaction_Click = m_Interaction.FindAction("Click", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -282,6 +312,39 @@ public class @PlayerControls : IInputActionCollection, IDisposable
         }
     }
     public LookActions @Look => new LookActions(this);
+
+    // Interaction
+    private readonly InputActionMap m_Interaction;
+    private IInteractionActions m_InteractionActionsCallbackInterface;
+    private readonly InputAction m_Interaction_Click;
+    public struct InteractionActions
+    {
+        private @PlayerControls m_Wrapper;
+        public InteractionActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Click => m_Wrapper.m_Interaction_Click;
+        public InputActionMap Get() { return m_Wrapper.m_Interaction; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(InteractionActions set) { return set.Get(); }
+        public void SetCallbacks(IInteractionActions instance)
+        {
+            if (m_Wrapper.m_InteractionActionsCallbackInterface != null)
+            {
+                @Click.started -= m_Wrapper.m_InteractionActionsCallbackInterface.OnClick;
+                @Click.performed -= m_Wrapper.m_InteractionActionsCallbackInterface.OnClick;
+                @Click.canceled -= m_Wrapper.m_InteractionActionsCallbackInterface.OnClick;
+            }
+            m_Wrapper.m_InteractionActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Click.started += instance.OnClick;
+                @Click.performed += instance.OnClick;
+                @Click.canceled += instance.OnClick;
+            }
+        }
+    }
+    public InteractionActions @Interaction => new InteractionActions(this);
     public interface IMoveActions
     {
         void OnWASD(InputAction.CallbackContext context);
@@ -290,5 +353,9 @@ public class @PlayerControls : IInputActionCollection, IDisposable
     public interface ILookActions
     {
         void OnMouse(InputAction.CallbackContext context);
+    }
+    public interface IInteractionActions
+    {
+        void OnClick(InputAction.CallbackContext context);
     }
 }

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class UserInterface : MonoBehaviour
 {
     public Text velocityText;
-    public Text speedSun;
+    public Text speed;
     public Text speedTH;
 
     private static UserInterface instance;
@@ -16,10 +16,9 @@ public class UserInterface : MonoBehaviour
         instance = this;
     }
 
-    public static void UpdateUI(Vector3 velocity, object speedSun, object speedTH)
+    public static void UpdateUI(Vector3 velocity, string target, float speed)
     {
         instance.velocityText.text = "Velocity: " + velocity;
-        instance.speedSun.text = "Speed to Sun: " + speedSun;
-        instance.speedTH.text = "Speed to Timber Hearth: " + speedTH;
+        instance.speed.text = $"Speed to {target}: {speed}";
     }
 }
