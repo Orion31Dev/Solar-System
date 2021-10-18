@@ -34,7 +34,8 @@ public class CelestialBody : MonoBehaviour
     {
         Mass = surfaceGravity * radius * radius / Universe.G;
 
-        if (TryGetComponent<Planet>(out var planet)) radius = planet.shapeSettings.planetRadius;
+        var planet = GetComponentInChildren<Planet>();
+        if (planet) radius = planet.shapeSettings.planetRadius * 2;
     }
 
     public void UpdateVelocity(CelestialBody[] bodies, float timeStep)
@@ -48,7 +49,7 @@ public class CelestialBody : MonoBehaviour
             Vector3 force = forceDir * Universe.G * other.Mass / sqrDist;
             Vector3 accel = force;
 
-            V += accel * timeStep * 1;
+           rigidbody.velocity += accel * timeStep * 1;
         }
     }
 

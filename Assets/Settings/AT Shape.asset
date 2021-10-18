@@ -18,20 +18,20 @@ MonoBehaviour:
     maskByLayer0: 0
     noiseSettings:
       type: 0
-      strength: 0.05
-      baseRoughness: 1
-      roughness: 2
-      persistance: 0.4
+      strength: 0.06
+      baseRoughness: 2
+      roughness: 1
+      persistance: 0.2
       weightPersistance: 1
       minVal: 0.7
-      octaves: 8
+      octaves: 4
       maskByLayer0: 0
       center: {x: 12, y: 0, z: 0}
-  - enabled: 0
+  - enabled: 1
     maskByLayer0: 1
     noiseSettings:
       type: 0
-      strength: 1.2
+      strength: 1
       baseRoughness: 3
       roughness: 1
       persistance: 0.5

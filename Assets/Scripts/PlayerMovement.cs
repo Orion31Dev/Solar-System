@@ -7,14 +7,15 @@ public class PlayerMovement : MonoBehaviour
 {
     public float moveSpeed = 10;
     public float accelSpeed = 1;
-    public float lookX = 30;
-    public float lookY = 30;
+    public float lookX = 30f;
+    public float lookY = 30f;
 
     PlayerControls controls;
 
     Camera cam;
+    new Rigidbody rigidbody;
 
-    public Vector3 V { get; private set; }
+    public Vector3 V { get; set; }
     Vector3 a;
 
     private void Awake()
@@ -23,6 +24,7 @@ public class PlayerMovement : MonoBehaviour
         controls.Look.Mouse.performed += Look;
 
         cam = GetComponentInChildren<Camera>();
+        rigidbody = GetComponentInChildren<Rigidbody>();
 
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -42,11 +44,8 @@ public class PlayerMovement : MonoBehaviour
         var wasd = new Vector3(wasd2d.x, up, wasd2d.y).normalized;
 
         a += transform.TransformDirection(wasd);
-
-        V += a * Time.deltaTime * accelSpeed;
-        V = Vector3.ClampMagnitude(V, moveSpeed);
-
-        transform.position += V * Time.deltaTime;
+        
+        rigidbody.velocity += a * Time.deltaTime * accelSpeed;
     }
 
     private void Look(InputAction.CallbackContext ctx)
@@ -54,8 +53,8 @@ public class PlayerMovement : MonoBehaviour
         Vector3 rot = transform.rotation.eulerAngles;
         var delta = ctx.ReadValue<Vector2>();
 
-        rot.y += delta.x * lookX * Time.deltaTime;
-        rot.x -= delta.y * lookY * Time.deltaTime;
+        rot.y += delta.x * lookX;
+        rot.x -= delta.y * lookY;
 
         transform.rotation = Quaternion.Euler(rot);
     }
